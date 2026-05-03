@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  cassandra1:
+    image: cassandra:4.1
+    container_name: cassandra1
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=ClusterEtudiants
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_RACK=R1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    networks:
+      - cassandra-net
+
+  cassandra2:
+    image: cassandra:4.1
+    container_name: cassandra2
+    environment:
+      - CASSANDRA_CLUSTER_NAME=ClusterEtudiants
+      - CASSANDRA_SEEDS=cassandra1
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_RACK=R1
+    depends_on:
+      - cassandra1
+    networks:
+      - cassandra-net
+
+  cassandra3:
+    image: cassandra:4.1
+    container_name: cassandra3
+    environment:
+      - CASSANDRA_CLUSTER_NAME=ClusterEtudiants
+      - CASSANDRA_SEEDS=cassandra1
+      - CASSANDRA_DC=DC1
+      - CASSANDRA_RACK=R1
+    depends_on:
+      - cassandra1
+    networks:
+      - cassandra-net
+
+networks:
+  cassandra-net:
